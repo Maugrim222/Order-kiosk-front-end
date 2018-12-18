@@ -1,0 +1,178 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" type="text/css" href="css/styleKiosk.css">
+        <script src="js/script.js" defer></script>
+        <script src="https://vuejs.org/js/vue.js"></script>
+        <script src="js/mockData.js"></script>
+        <script src="js/translations.js"></script>
+        <title> Choose your Juice! - Kiosk view </title>
+        <meta charset="utf-8"/> 
+
+    </head>
+
+    <body>
+        <div id="main">
+
+            <!-- STARTING SCREEN -->
+    
+           <div id ="startingScreen" v-if="viewState.showStartingScreen" v-on:click="onClickStartingScreen()">
+              <h1 id = "title"> JUCIFER AB </h1>
+              <img src="images/Logo.PNG" id = "Logo">
+              <h3 id = "center"> Tab screen to start ordering </h3> 
+           </div>
+
+           <!-- OVERVIEW SCREEN -->
+
+           <div id="overViewScreen" v-if="viewState.showOverviewScreen" >
+              <h3 id="center"> Our favorites this week</h3>
+              <div class="recommendations" >
+                    <div class="grid-container">
+                        <div class="grid-item product-preview" v-for="product in recommendedProducts" v-on:click="onClickSelectRecommendedType(product)">
+                            <img class="product-preview-img" src="http://via.placeholder.com/150x200/ffa500/ffffff">
+                            <span class="product-preview-price">{{product.price}} kr</span>
+                            <div class="product-preview-name">{{product.name}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="costumBox">
+                    <span id= "center" class="buttonText" v-on:click="onClickMakeMyOwn()">Create Costum Smoothie</span>
+                </div>
+                <div id="costumBox">
+                    <span id ="center" class="buttonText" v-on:click="onClickMenuJuices()">Create Costum Juice</span>
+                </div>  
+           </div>
+
+           <!-- TOP BAR (cancel Button and step bar) -->
+
+           <div class ="topBar" v-if= viewState.showTopBar>
+               <img class="cancel-button" src="images/cancel-button.png" v-on:click="onClickCancelButton()">
+               <div class= "progressIndicator">
+
+                    <span>&nbsp;</span>
+                    <div class="step-container">
+                        <span>1</span>    
+                        <img class="checkmark" src="images/checkmark.png" v-if="1 < viewState.progressIndicatorCurStep">
+                    </div>
+                    <div class="step-container" v-for="step in viewState.progressIndicatorSteps" v-if="step > 1">
+                        <span>&mdash;</span>
+                        <span>{{step}}</span>    
+                        <img class="checkmark" src="images/checkmark.png" v-if="step < viewState.progressIndicatorCurStep">
+                    </div>
+                    <span>&nbsp;</span>
+
+               </div>
+           </div>
+
+           <!-- RECOMMENDED SIZE -->
+
+           <div class="product-size" v-if="viewState.showProductSize">
+                <h3 id="center">Choose your size</h3>   
+                <div class="choose-product-size">
+                    <div class="product-size-container" v-on:click="onClickProductSize('small')">
+                        <img v-bind:src="viewState.cupSizeUrlSmall">
+                        <div v-bind:class="{selected: currentProductOrder.size === 'small'}">40 kr</div>
+                    </div>
+                    <div class="product-size-container" v-on:click="onClickProductSize('medium')">
+                        <img v-bind:src="viewState.cupSizeUrlMedium">
+                        <div v-bind:class="{selected: currentProductOrder.size === 'medium'}">50 kr</div>
+                    </div>
+                    <div class="product-size-container" v-on:click="onClickProductSize('large')">
+                        <img v-bind:src="viewState.cupSizeUrlLarge">
+                        <div v-bind:class="{selected: currentProductOrder.size === 'large'}">60 kr</div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Confirmation page -->
+
+            <div class="confirmRecommended" v-if="viewState.showConfirmRecommended">
+                <div class="product-summary">
+                    <div class="product-preview-and-name">
+                        <img class="product-preview-img" v-bind:src="currentProductOrder.product.img">
+                        <span class="product-name">
+                            {{currentProductOrder.product.name}}
+                        </span>
+                    </div>
+                    <div class="ingredient-list">
+                        <h3>Ingredients</h3>
+                        <ul>
+                            <li v-for="ingredient in currentProductOrder.product.ingredients">
+                                <span>{{ingredient.name}}</span>
+                                <span v-if="ingredient.price > 0">(+ {{ingredient.price}} kr)</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>   
+
+            <!--Juices -->  
+            <div class="juices" v-if="viewState.showJuices">
+                <h3 id="center">Choose your juice flavour</h3>
+                <div class="choose-juice-type" v-if="viewState.showChooseJuiceType">
+                    <div class="grid-container-juices">
+                        <div class="grid-item product-preview" v-for="juice in juices" v-on:click="onClickSelectJuiceType(juice)">
+                            <img class="product-preview-img" v-bind:src="juice.img">
+                            <span class="product-preview-price">{{juice.price}} kr</span>
+                            <div class="product-preview-name">{{juice.name}}</div>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+
+            <!-- Customize smoothie -->
+
+            <div class="make-my-own" v-if="viewState.showMakeMyOwn">
+
+                 <!-- CUSTOMIZE SIZE -->
+
+                <div class="product-size" v-if="viewState.showProductSizeCustom">
+                    <h3 id="center">Choose your size</h3>   
+                    <div class="choose-product-size">
+                        <div class="product-size-container" v-on:click="onClickCustomSize('small')">
+                            <img v-bind:src="viewState.cupSizeCustomUrlSmall">
+                            <div v-bind:class="{selected: currentCustomOrder.size === 'small'}">40 kr</div>
+                        </div>
+                        <div class="product-size-container" v-on:click="onClickCustomSize('medium')">
+                            <img v-bind:src="viewState.cupSizeCustomUrlMedium">
+                            <div v-bind:class="{selected: currentCustomOrder.size === 'medium'}">50 kr</div>
+                        </div>
+                        <div class="product-size-container" v-on:click="onClickCustomSize('large')">
+                            <img v-bind:src="viewState.cupSizeCustomUrlLarge">
+                            <div v-bind:class="{selected: currentCustomOrder.size === 'large'}">60 kr</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="choose-base" v-if="viewState.showChooseBase">
+                    
+                    <h2 class="centered">{{'LBL_CHOOSE_A_BASE' | translate}}</h2>
+
+                    <product-preview-list v-bind:product-list="baseIngredients" v-bind:selectable-category="currentCustomOrder.baseIngredients" v-bind:is-extra-price="true" v-on:clickproduct="base => onClickSelectBaseIngredient(base)"></product-preview-list>
+
+                </div>
+
+
+            </div>
+
+            <!-- Footer (Back, Next)  -->
+
+            <div class="back-next-menu-footer" v-if="viewState.showBackNextMenu">
+                <img src="images/back-button.png" v-if="viewState.showBackButton" v-on:click="onClickBackButton()">
+                <img src="images/next-button.png" v-if="viewState.showNextButton" v-on:click="onClickNextButton()" v-bind:class="{disabled: !isNextButtonEnabled()}">
+                <img class="buy-button" src="images/buy-button-rec.png" v-if="viewState.showBuyButton" v-on:click="onClickBuyButton()">
+            </div>
+
+            <!-- order number -->
+
+            <div class="order-number" v-if="viewState.showOrderNumber">
+                <h3 class="centered">Thank you for your order!</h3>
+                <h2 class="centered">Your ordering number is</h2>
+                <h1 class="centered">{{viewState.currentOrder.orderNumber}}</h1>
+                <h3 class="centered">Please go to the counter and collect your fresh drink.</h3>
+            </div>
+
+    
+        </div>  
+    </body>
