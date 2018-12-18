@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Choose Your Juice</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="js/vue.js"></script>
+    <script src="js/mockData.js"></script>
+    <script src="js/translations.js"></script>
+    <script src="js/script.js" defer></script>
+    <!-- <script src="https://vuejs.org/js/vue.js"></script> -->
+</head>
+
+<body>
+
+    <div id="main-container">
+        <div class="menu-top-bar" v-if="viewState.showMenuTopBar">
+            <img class="cancel-button" src="images/cancel-button.png" v-if="!viewState.showRecommendations" v-on:click="onClickCancel()">
+            <span class="language-button" v-if="viewState.showRecommendations" v-on:click="toggleLanguage()">{{currentUserSettings.language}}</span>
+            <h1 class="centered" v-if="viewState.showRecommendations">Juicifer AB</h1>
+            <img class="settings-button" src="images/cog.png" v-if="viewState.showRecommendations" v-on:click="onClickSettings()">
+            <div class="progress-indicator" v-if="viewState.showProgressIndicator">
+                <span>&nbsp;</span>
+                <div class="step-container">
+                    <span>1</span>    
+                    <img class="checkmark" src="images/checkmark.png" v-if="1 < viewState.progressIndicatorCurStep">
+                </div>
+                <div class="step-container" v-for="step in viewState.progressIndicatorSteps" v-if="step > 1">
+                    <span>&mdash;</span>
+                    <span>{{step}}</span>    
+                    <img class="checkmark" src="images/checkmark.png" v-if="step < viewState.progressIndicatorCurStep">
+                </div>
+                <span>&nbsp;</span>
+            </div>
+        </div>
+
+        <div class="menu-container">
+            <div class="recommendations" v-if="viewState.showRecommendations">
+
+                <product-preview-list v-bind:product-list="recommendedProducts" v-on:clickproduct="product => onClickSelectRecommendedType(product)"></product-preview-list>
+
+                <div class="icon-credit">
+                    <p>This app uses icons from the following sources/authors:</p>
+
+                    <div>Icons made by <a href="https://www.flaticon.com/authors/zurb" title="Zurb">Zurb</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
+                    <div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
+                    <div>Icons made by <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
+                    <div>Icons made by <a href="https://www.flaticon.com/authors/dave-gandy" title="Dave Gandy">Dave Gandy</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+                </div>
+
+            </div>
+
+            <div class="juices" v-if="viewState.showJuices">
+                
+                <div class="choose-juice-type" v-if="viewState.showChooseJuiceType">
+
+                    <product-preview-list v-bind:product-list="juices" v-on:clickproduct="juice => onClickSelectJuiceType(juice)"></product-preview-list>
+
+                </div>                
+            </div>
+
+
+            <div class="make-my-own" v-if="viewState.showMakeMyOwn">
+
+                <div class="choose-custom-size" v-if="viewState.showChooseCustomSize">
+                    <cup-size size="small" v-on:click.native="onClickCustomDrinkSize('SMALL')"></cup-size>
+                    <hr>
+                    <cup-size size="medium" v-on:click.native="onClickCustomDrinkSize('MEDIUM')"></cup-size>                    
+                    <hr>
+                    <cup-size size="large" v-on:click.native="onClickCustomDrinkSize('LARGE')"></cup-size>
+                </div>
+
+                <div class="choose-base" v-if="viewState.showChooseBase">
+                    
+                    <h2 class="centered">{{'LBL_CHOOSE_A_BASE' | translate}}</h2>
+
+                    <product-preview-list v-bind:product-list="baseIngredients" v-bind:selectable-category="currentCustomOrder.baseIngredients" v-bind:is-extra-price="true" v-on:clickproduct="base => onClickSelectBaseIngredient(base)"></product-preview-list>
+
+                </div>
+
+                <div class="choose-ingredients" v-if="viewState.showChooseIngredients">
+                    <h2 class="centered">{{'LBL_CHOOSE_INGREDIENTS' | translate}}</h2>
+
+                    <!-- The button to expand/collapse the ingredient category -->
+                    <div class="button button-full button-expand-collapse button-red" v-on:click="onClickExpandCollapseIngredients('fruitsBerries')">
+                        <span>{{'LBL_FRUITS_AND_BERRIES' | translate}}</span>
+                        <img v-bind:src="getExpandCollapseButtonSrc('fruitsBerries')">
+                    </div>
+
+                    <!-- The actual container for the ingredients of one category. Show only if expanded -->
+                    <!-- <product-preview-list v-bind:product-list="fruitsBerriesIngredients" v-bind:is-selectable="true" v-bind:is-extra-price="true" v-on:clickproduct="ingredient => onClickSelectIngredient(ingredient)"></product-preview-list> -->
+
+                    <product-preview-list v-bind:product-list="fruitsBerriesIngredients" v-bind:selectable-category="currentCustomOrder.ingredients" v-bind:is-extra-price="true" v-on:clickproduct="ingredient => onClickSelectIngredient(ingredient)" v-if="viewState.isIngredientsFruitsBerriesExpanded"></product-preview-list>
+
+                    <!-- The buttons further down are only shown if no other categories further up are expanded to avoid strange issues with scrolling -->
+                    <div class="button button-full button-expand-collapse button-orange" v-on:click="onClickExpandCollapseIngredients('vegetables')" v-if="!viewState.isIngredientsFruitsBerriesExpanded">
+                        <span>Vegetables</span>
+                        <img v-bind:src="getExpandCollapseButtonSrc('vegetables')">
+                    </div>
+
+                    <product-preview-list v-bind:product-list="vegetablesIngredients" v-bind:selectable-category="currentCustomOrder.ingredients" v-bind:is-extra-price="true" v-on:clickproduct="ingredient => onClickSelectIngredient(ingredient)" v-if="viewState.isIngredientsVegetablesExpanded"></product-preview-list>
+
+                    <div class="button button-full button-expand-collapse button-purple" v-on:click="onClickExpandCollapseIngredients('nuts')" v-if="!viewState.isIngredientsFruitsBerriesExpanded && !viewState.isIngredientsVegetablesExpanded">
+                        <span>Nuts</span>
+                        <img v-bind:src="getExpandCollapseButtonSrc('nuts')">
+                    </div>
+
+                    <product-preview-list v-bind:product-list="nutsIngredients" v-bind:selectable-category="currentCustomOrder.ingredients" v-bind:is-extra-price="true" v-on:clickproduct="ingredient => onClickSelectIngredient(ingredient)" v-if="viewState.isIngredientsNutsExpanded"></product-preview-list>
+
+                    <div class="button button-full button-expand-collapse button-blue" v-on:click="onClickExpandCollapseIngredients('others')" v-if="!viewState.isIngredientsFruitsBerriesExpanded && !viewState.isIngredientsVegetablesExpanded && !viewState.isIngredientsNutsExpanded">
+                        <span>Others</span>
+                        <img v-bind:src="getExpandCollapseButtonSrc('others')">
+                    </div>
+
+                    <product-preview-list v-bind:product-list="othersIngredients" v-bind:selectable-category="currentCustomOrder.ingredients" v-bind:is-extra-price="true" v-on:clickproduct="ingredient => onClickSelectIngredient(ingredient)" v-if="viewState.isIngredientsOthersExpanded"></product-preview-list>
+
+                </div>
+
+                <div class="choose-extras" v-if="viewState.showChooseExtras">
+
+                    <h2 class="centered">'LBL_CHOOSE_EXTRAS' | translate</h2>
+                    <product-preview-list v-bind:product-list="extrasIngredients" v-bind:selectable-category="currentCustomOrder.extras" v-bind:is-extra-price="true" v-on:clickproduct="extra => onClickSelectExtrasIngredient(extra)"></product-preview-list>
+
+                </div>
+
+                <div class="confirm-custom" v-if="viewState.showConfirmCustom">
+                    <h2 class="centered">{{'LBL_YOU_CREATED_A_TASTY_SMOOTHIE' | translate}}</h2>
+
+                    <hr>
+
+                    <input type="text" class="text-input" v-model="currentCustomOrder.customName" placeholder="Name your creation">
+
+                    <div class="size-container">
+                        <img class="cup-size" v-bind:src="getCutomCupSizeImageSrcForCurrentOrder()">
+                        <div class="size-content-container">
+                            <div class="extras">
+                                <div v-for="extra in currentCustomOrder.extras">{{extra.name | translate}}</div>
+                            </div>
+                            <div class="ingredients">
+                                <div v-for="ingredient in currentCustomOrder.ingredients">{{ingredient.name | translate}}</div>
+                            </div>
+                            <span class="base" v-for="base in currentCustomOrder.baseIngredients">{{base.name | translate}}</span>
+                        </div>
+                    </div>
+
+                    <div class="confirm-info">{{currentCustomOrder.size | translate | capitalize}}</div>
+                    <div class="confirm-info">{{currentCustomOrder.price}}</div>
+
+                    <div class="button button-full button-green" v-on:click="onClickConfirmCustomBuyNow()">{{'LBL_BUY_NOW' | translate}}</div>
+                </div>
+
+            </div>
+
+            <div class="favorites" v-if="viewState.showFavorites">
+
+                <product-preview-list v-bind:product-list="getFavorites()" v-on:clickproduct="favorite => onClickSelectFavoriteType(favorite)"></product-preview-list>
+
+            </div>
+
+            <div class="product-size-and-confirm" v-if="viewState.showProductSizeAndConfirm">
+                    
+                <div class="choose-product-size">
+                    <div class="product-size-container" v-on:click="onClickProductSize('SMALL')">
+                        <img v-bind:src="viewState.cupSizeUrlSmall">
+                        <div v-bind:class="{selected: currentProductOrder.size === 'SMALL'}">{{getPriceForProduct(currentProductOrder.product, 'SMALL')}} kr</div>
+                    </div>
+                    <div class="product-size-container" v-on:click="onClickProductSize('MEDIUM')">
+                        <img v-bind:src="viewState.cupSizeUrlMedium">
+                        <div v-bind:class="{selected: currentProductOrder.size === 'MEDIUM'}">{{getPriceForProduct(currentProductOrder.product, 'MEDIUM')}} kr</div>
+                    </div>
+                    <div class="product-size-container" v-on:click="onClickProductSize('LARGE')">
+                        <img v-bind:src="viewState.cupSizeUrlLarge">
+                        <div v-bind:class="{selected: currentProductOrder.size === 'LARGE'}">{{getPriceForProduct(currentProductOrder.product, 'LARGE')}} kr</div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="product-summary">
+                    <div class="product-preview-and-name">
+                        <img class="product-preview-img" v-bind:src="currentProductOrder.product.img">
+                        <span class="product-name">
+                            {{currentProductOrder.product.name | translate}}
+                        </span>
+                    </div>
+                    <div class="ingredient-list">
+                        <h3>Ingredients</h3>
+                        <ul>
+                            <li v-for="ingredient in currentProductOrder.product.ingredients">
+                                <span>{{ingredient.name | translate}}</span>
+                                <span v-if="ingredient.price > 0">(+ {{ingredient.price}} kr)</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-number" v-if="viewState.showOrderNumber">
+                <h3 class="centered">{{'LBL_THANK_YOU_FOR_YOUR_ORDER' | translate}}</h3>
+                <h2 class="centered">{{'YOUR_ORDERING_NUMBER_IS' | translate}}</h2>
+                <h1 class="centered">{{viewState.currentOrder.orderNumber}}</h1>
+                <h3 class="centered">{{'LBL_PLEAE_GO_TO_THE_COUNTER_AND_COLLECT_YOUR_FRESH_DRINK' | translate}}</h3>
+            </div>
+        </div>
+
+
+        <div class="menu-footer" v-if="viewState.showMenuFooter">
+            <div class="menu-footer-item" v-bind:class="{selected: viewState.showJuices}" v-on:click="onClickMenuJuices()">{{'LBL_JUICES' | translate}}</div>
+            <div class="menu-footer-item" v-bind:class="{selected: viewState.showMakeMyOwn}" v-on:click="onClickMenuMakeMyOwn()">{{'LBL_MAKE_MY_OWN' | translate}}</div>
+            <div class="menu-footer-item" v-bind:class="{selected: viewState.showFavorites}" v-on:click="onClickMenuMyFavorites()">{{'LBL_MY_FAVORITES' | translate}}</div>
+        </div>
+        <div class="back-next-menu-footer" v-if="viewState.showBackNextMenu">
+            <img src="images/back-button.png" v-if="viewState.showBackButton" v-on:click="onClickBackButton()">
+            <div class="itemSelectionIndicator" v-if="viewState.showItemSelectionIndicator">
+                <span>{{viewState.selectedItems}}/{{viewState.availableItems}}</span>
+                <span>{{'LBL_SELECTED' | translate}}</span>
+            </div>
+            <img src="images/next-button.png" v-if="viewState.showNextButton" v-on:click="onClickNextButton()" v-bind:class="{disabled: !isNextButtonEnabled()}">
+            <img src="images/buy-button.png" v-if="viewState.showBuyButton" v-on:click="onClickBuyButton()" v-bind:class="{disabled: !isBuyButtonEnabled()}">
+        </div>
+
+
+        <div class="settings-container" v-if="viewState.showUserLogin || viewState.showUserSettings">
+            <div class="login" v-if="viewState.showUserLogin">
+                <h1 class="centered">Login</h1>
+                <img class="logo" src="images/logo_settings.png">
+                <input type="text" class="text-input" v-model="currentUserSettings.userName" placeholder="username">
+                <input type="text" class="text-input" placeholder="password">
+                <div class="menu-footer">
+                    <div class="menu-footer-item" v-on:click="onClickBackButton()">Back</div>
+                    <div class="menu-footer-item" v-on:click="onClickLogin()">Login</div>
+                </div>
+            </div>
+            <div class="settings" v-if="viewState.showUserSettings">
+                <img class="logo" src="images/logo_settings.png">
+                <h1 class="centered">{{currentUserSettings.userName}}</h1>
+                <div>
+                    <div class="button button-full button-gray" v-on:click="toggleLanguage()">{{'LBL_LANGUAGE' | translate}} : {{currentUserSettings.language}}</div>
+                    <div class="button button-full button-gray">{{'LBL_PAYMENT_DATA' | translate}}</div>
+                </div>
+                <div class="menu-footer">
+                    <div class="menu-footer-item" v-on:click="onClickBackButton()">{{'LBL_BACK' | translate}}</div>
+                    <div class="menu-footer-item" v-on:click="onClickLogout()">{{'LBL_LOGOUT'}}</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+
+</body>
+</html>

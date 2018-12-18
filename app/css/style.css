@@ -1,0 +1,411 @@
+body{
+    margin: 0;
+}
+
+#main-container{
+    font-size: 40px;
+    font-family: Verdana;
+}
+
+.centered {
+    text-align: center;
+}
+
+.button.button-green {
+    background-color: green;
+    color: white;
+}
+
+.button.button-red {
+    background-color: darkred;
+    color: white;
+}
+
+.button.button-orange {
+    background-color: orange;
+    color: white;
+}
+
+.button.button-purple {
+    background-color: purple;
+    color: white;
+}
+
+.button.button-blue {
+    background-color: blue;
+    color: white;
+}
+
+.button.button-gray {
+    background-color: gray;
+    color: white;
+}
+
+div.icon-credit {
+    margin: 200px 30px 30px 30px;
+    font-size: 30px;
+}
+
+
+/* Size selection (custom drink) */
+
+div.size-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+div.size-metrics-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+div.size-content-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+div.size-content-container .extras {
+    color: #e06666;
+}
+
+div.size-content-container .ingredients {
+    color: #f6b26b;
+}
+
+div.size-content-container .base {
+    color: #ffd966;
+}
+
+img.cup-size {
+    height: 20vh;
+    margin: 30px;
+}
+
+
+
+/* Confirm custom drink */
+
+input.text-input {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+    width: 70%;
+    padding: 20px;
+    font-size: inherit;
+    border-width: 3px;
+}
+
+.confirm-custom img.cup-size {
+    height: 30vh;
+    margin: 30px;
+}
+
+.confirm-custom .confirm-info {
+    font-size: 55px;
+    margin: 30px;
+    text-align: center;
+}
+
+/* Size and confirm of recommended drink or juice */
+
+.product-size-and-confirm>.choose-product-size {
+    display: flex;
+    justify-content: space-around;
+    margin: 30px;
+}
+
+.product-size-and-confirm>.choose-product-size>.product-size-container>img {
+    height: 20vh;
+}
+
+.product-size-and-confirm>.choose-product-size>.product-size-container>div {
+    text-align: center;
+    color: #999999;
+}
+
+.product-size-and-confirm>.choose-product-size>.product-size-container>div.selected {
+    color: black;
+}
+
+.product-size-and-confirm>.product-summary {
+    margin: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: flex-start;
+}
+
+.product-size-and-confirm>.product-summary>.ingredient-list {
+    /* make the ingredient list the same height as the preview image */
+    align-self: stretch;
+    border: 1px solid black;
+    border-radius: 30px;
+    /* for distance between border and content */
+    padding: 30px;
+}
+
+.product-size-and-confirm>.product-summary>.product-preview-and-name {
+    display: flex;
+    flex-direction: column;
+}
+
+.product-size-and-confirm>.product-summary>.product-preview-and-name>.product-name {
+    text-align: center;
+}
+
+.product-size-and-confirm>.product-summary>.product-preview-and-name>img.product-preview-img {
+    margin: 30px;
+    max-width: 400px;
+    max-height: 400px;
+
+}
+
+
+/* Ingredient Selection */
+
+.button.button-full {
+    display: block;
+    margin-top: 40px;
+    margin-left: 40px;
+    margin-right: 40px;
+    height: 100px;
+    text-align: center;
+    line-height: 100px;
+    font-weight: bold;
+}
+
+.button.button-full.button-expand-collapse {
+    position: relative;
+}
+
+.button.button-full.button-expand-collapse>img{
+    height: 70px;
+    margin: 20px;
+    position: absolute;
+    right: 0px;
+}
+
+
+.product-preview-price.has-extra-price {
+    /* display the text for additional price red (e.g. +5 kr) */
+    color: red;
+}
+
+
+/* Order Number */
+.order-number>* {
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+/* Product preview elements (recommendations, juices, ...)*/
+
+div.product-preview {
+    /*display: inline-block;*/
+    width: 400px;
+    background-color: #eeeeee;
+    text-align: center;
+    margin: 30px;
+    position: relative;
+}
+
+div.product-preview.selected {
+    background-color: green;
+}
+
+div.product-preview>img {
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 20px;
+    max-width: 200px;
+    max-height: 200px;
+}
+
+
+div.product-preview>span {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+div.product-preview>div {
+    padding: 20px;
+}
+
+/* Generic grid container */
+
+div.grid-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+div.grid-container>h2 {
+    width: 100%;
+}
+
+/* Top Menu Bar */
+
+div.menu-top-bar {
+    height: 10vh;
+    overflow-y: hidden;
+    border-bottom: 2px solid black;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+div.progress-indicator {
+    font-size: 56px;
+}
+
+div.step-container {
+    display: inline;
+}
+
+img.checkmark {
+    width: 3vh;
+    position: absolute;
+    margin-top: -25px;
+    margin-left: -25px;
+}
+
+img.cancel-button {
+    margin-left: 1vh;
+    width: 8vh;
+    height: 8vh;
+    position: absolute;
+    left: 0px;
+}
+
+img.settings-button {
+    margin-right: 2vh;
+    width: 7vh;
+    height: 7vh;
+    position: absolute;
+    right: 0px;
+}
+
+span.language-button {
+    margin-left: 2vh;
+    width: 7vh;
+    height: 7vh;
+    position: absolute;
+    line-height: 7vh;
+    left: 0px;
+}
+
+/* Menu Container */
+
+.menu-container {
+    max-height: 80vh;
+    overflow-y: scroll;
+}
+
+.menu-container * {
+    max-height: inherit;
+
+}
+
+/* Back-Next Menu*/
+
+.back-next-menu-footer {
+    position: absolute;
+    bottom:0px;
+    left: 0px;
+    width: 100%;
+    height: 10vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid black;
+}
+
+.back-next-menu-footer>img{
+    margin-left: 30px;
+    margin-right: 30px;
+    height: 6vh;
+}
+
+.back-next-menu-footer>img.disabled {
+    opacity: 0.5;
+}
+
+.itemSelectionIndicator {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    font-weight: bold;
+}
+
+
+/* Menu footer */
+
+.menu-footer {
+    position: absolute;
+    bottom:0px;
+    left: 0px;
+    width: 100%;
+    height: 10vh;
+    display: flex;
+}
+
+.menu-footer>div{
+    background-color: #eeeeee;
+    /*height: 10%;*/
+    height: 10vh;
+    border-top: 2px solid black;
+    text-align: center;
+    display: inline-block;
+    width: 33.3%;
+    /* same as height, to center the text vertically*/
+    line-height: 10vh;
+    text-align: center;
+}
+
+.menu-footer>div.selected{
+    background-color: #ffffff;
+    border-top: none;
+}
+
+.menu-footer>div:first-child {
+    border-right: 1px solid black;
+}
+
+.menu-footer>div:last-child {
+    border-left: 1px solid black;
+}
+
+
+.settings-container .menu-footer>div {
+    width: 50%;
+}
+
+.settings-container .login, .settings-container .settings {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: stretch;
+}
+
+.settings-container img.logo {
+    margin-left: auto;
+    margin-right: auto;
+    width: 60%;
+    margin-bottom: 100px;
+}
+
+.settings-container .settings img.logo {
+    margin-top: 100px;
+    margin-bottom: 0;
+}
+
